@@ -1,5 +1,4 @@
 from django.shortcuts import get_object_or_404
-from rest_framework import generics
 from .serializers import ClientSerializer, APIUserSerializer, StaffSerializer
 from .models import Client, APIUser, Staff
 from rest_framework_simplejwt.views import TokenObtainPairView
@@ -108,10 +107,20 @@ class BlacklistTokenUpdateView(APIView):
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
 # for staff and admin
+
+
 class ClientUpdateView(APIView):
     permission_classes = [IsAuthenticated]
 
     def put(self, request, id):
+        user = request.user
+        user_dict = {
+            "status": user.is_active,
+            "staff": user.is_staff,
+            "email": user.email,
+            "full_name": user.full_name
+        }
+        print(request.user.id)
         instance = get_object_or_404(Client, id=id)
         serializer = ClientSerializer(
             instance=instance, data=request.data, partial=True)
@@ -120,28 +129,6 @@ class ClientUpdateView(APIView):
             return Response({'message': 'Client updated successfully'}, status=status.HTTP_200_OK)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class Single_client(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request, id):
-        instance = get_object_or_404(Client, id=id)
-        serializer = ClientSerializer(instance).data
-        if serializer:
-            return Response(serializer, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-class Clients(APIView):
-    permission_classes = [IsAuthenticated]
-
-    def get(self, request):
-        instance = Client.objects.all()
-        serializer = ClientSerializer(instance, many=True).data
-        if serializer:
-            return Response(serializer, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class ClientCreateView(APIView):

@@ -4,16 +4,17 @@ from django.db import models
 
 from users.models import APIUser, Client, Staff
 
+
 class Loan(models.Model):
     loan_id = models.UUIDField(default=uuid.uuid4, editable=False, unique=True)
     client = models.ForeignKey(Client, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     status = models.CharField(max_length=20, choices=[(
         'Pending', 'Pending'), ('Approved', 'Approved'), ('Paid', 'Paid')])
-    disbursement_date = models.DateTimeField(null=True, blank=True)
+    disbursement_date = models.DateTimeField(default=timezone.now)
     repayment_date = models.DateTimeField(null=True, blank=True)
-    loan_type = models.CharField(max_length=50, null=True, blank=True)
-
+    loan_type = models.CharField(max_length=50, choices=[(
+        'monthly', 'monthly'), ('Yearly', 'Yearly'), ('Weekly', 'Weekly')])
     def __str__(self):
         return f"Loan #{self.loan_id} - {self.client.name}"
 
