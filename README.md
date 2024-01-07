@@ -6,7 +6,7 @@ Welcome to the Microfinance API designed to facilitate seamless communication be
 
 ### API Base URL
 
-`https://api.visionfundmicrofinance.com`
+`https://api.micro/v1/.com`
 
 ## 1. User Management
 
@@ -84,7 +84,7 @@ Create a new user profile with personal details.
 
 **Description:**
 
-Obtain an authentication token for API access.
+Obtain an authentication token for API access for registred and verified users.
 
 **Request:**
 
