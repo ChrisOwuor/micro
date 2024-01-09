@@ -4,7 +4,7 @@ from .models import Loan, LoanDisbursement, Repayment, APIKey
 
 @admin.register(Loan)
 class LoanAdmin(admin.ModelAdmin):
-    list_display = ('loan_id', 'client', 'amount', 'status',
+    list_display = ( 'client', 'amount', 'status',
                     'disbursement_date', 'repayment_date', 'loan_type')
     search_fields = ('loan_id', 'client__name')
     list_filter = ('status', 'disbursement_date',

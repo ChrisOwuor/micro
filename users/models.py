@@ -50,7 +50,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = CustomAccountManager()
 
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = [ "full_name"]
+    REQUIRED_FIELDS = ["full_name"]
 
     def __str__(self):
         return self.full_name
@@ -60,6 +60,12 @@ class User(AbstractBaseUser, PermissionsMixin):
         # Generate and assign account number when saving the user
 
         super().save(*args, **kwargs)
+
+
+class Account(models.Model):
+    uuid_field = models.UUIDField(
+        default=uuid.uuid4, editable=False, unique=True)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
 
 
 class Client(models.Model):
@@ -75,6 +81,7 @@ class Client(models.Model):
     age = models.PositiveIntegerField()
     sex = models.CharField(max_length=10)
     phone = models.IntegerField(default=000000000)
+    account = models.OneToOneField(Account, on_delete=models.CASCADE)
 
     # New method to generate account number
 
@@ -128,5 +135,3 @@ class APIUser(models.Model):
 
     def __str__(self):
         return self.name
-
-

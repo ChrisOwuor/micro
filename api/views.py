@@ -143,7 +143,7 @@ class Disbursements(APIView):
     permission_classes = [IsAuthenticated]
     # make loan disbursement
 
-    def post(self, request):
+    def post(self, request,id):
         disbursement_serializer = LoanDisbursementSerializer(data=request.data)
         if disbursement_serializer.is_valid():
             disbursement_serializer.save()
