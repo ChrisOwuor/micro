@@ -4,6 +4,10 @@
 
 Welcome to the Microfinance API designed to facilitate seamless communication between financial services and other microfinance institutions or related entities. This documentation provides an overview of the API's features, endpoints, and usage guidelines.
 
+### API Postman documentation
+
+The full documentation  [Micro docs](https://documenter.getpostman.com/view/27401393/2s9YsKfs1X)
+
 ### API Base URL
 
 `https://api.micro/v1/.com`
