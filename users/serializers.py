@@ -1,4 +1,4 @@
-from .models import Client, Staff, APIUser
+from .models import Client, Staff, APIUser, Account
 from rest_framework import serializers
 from users.models import User
 
@@ -96,6 +96,19 @@ class ClientSerializer(serializers.ModelSerializer):
         # Save the changes
         instance.save()
 
+        return instance
+
+
+class AccountSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Account
+        fields = ['uuid_field', 'holder', 'amount',
+                  'account_number', 'account_type', 'created_at']
+
+    def create(self, validated_data):
+        # Create a new Client instance linked to the user
+        instance = self.Meta.model(**validated_data)
+        instance.save()
         return instance
 
 

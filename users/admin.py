@@ -1,6 +1,6 @@
 
 # Register your models here.
-from .models import Client, Staff, APIUser
+from .models import Client, Staff, APIUser, Account
 from django.contrib import admin
 from users.models import User
 from django.contrib.auth.admin import UserAdmin
@@ -18,7 +18,7 @@ class UserAdminConfig(UserAdmin):
                     'is_active', 'is_staff')
     fieldsets = (
         (None, {'fields': ('email', 'full_name',
-         )}),
+                           )}),
         ('Permissions', {'fields': ('is_staff', 'is_active')}),
     )
     formfield_overrides = {
@@ -37,9 +37,17 @@ admin.site.register(User, UserAdminConfig)
 # admin.py
 
 
+@admin.register(Account)
+class AccountAdmin(admin.ModelAdmin):
+    list_display = ('holder', 'amount', 'account_number',
+                    'account_type', 'created_at')
+    search_fields = ('holder__name', 'account_number')
+    list_filter = ('account_type', 'created_at')
+
+
 @admin.register(Client)
 class ClientAdmin(admin.ModelAdmin):
-    list_display = ['id','name', 'government_id',
+    list_display = ['id', 'name', 'government_id',
                     'location', 'age', 'sex', 'phone', 'is_client']
     search_fields = ['name', 'government_id', 'location']
     list_filter = ['is_client']

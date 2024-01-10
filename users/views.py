@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from .serializers import ClientSerializer, APIUserSerializer, StaffSerializer
+from .serializers import ClientSerializer, APIUserSerializer, StaffSerializer, AccountSerializer
 from .models import Client, APIUser, Staff
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework import status
@@ -138,8 +138,16 @@ class ClientCreateView(APIView):
         serializer = ClientSerializer(
             data=request.data, context={'user': request.user})
         if serializer.is_valid():
-            serializer.save()
-            return Response({'message': 'Client account created successfully'}, status=status.HTTP_201_CREATED)
+            client_instance = serializer.save()
+            account_data = {
+                'holder': client_instance,
+                'amount': 0.0,
+                'account_type': 'Savings'
+            }
+            account = AccountSerializer(account_data)
+            if account.is_valid():
+                new_account = account.save()
+            return Response({'message': 'Client account created successfully', "account": new_account, "client": client_instance}, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def put(self, request):

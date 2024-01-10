@@ -62,28 +62,38 @@ class User(AbstractBaseUser, PermissionsMixin):
         super().save(*args, **kwargs)
 
 
-class Account(models.Model):
-    uuid_field = models.UUIDField(
-        default=uuid.uuid4, editable=False, unique=True)
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
-
-
 class Client(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     uuid_field = models.UUIDField(
         default=uuid.uuid4, editable=False, unique=True)
     name = models.CharField(max_length=255)
-    account_number = models.CharField(
-        unique=True, max_length=12, null=True, blank=True)
     is_client = models.BooleanField(default=False)
     government_id = models.CharField(max_length=20, unique=True)
     location = models.CharField(max_length=255)
     age = models.PositiveIntegerField()
     sex = models.CharField(max_length=10)
-    phone = models.IntegerField(default=000000000)
-    account = models.OneToOneField(Account, on_delete=models.CASCADE)
-
+    phone = models.IntegerField(default=0)
     # New method to generate account number
+
+    def save(self, *args, **kwargs):
+        # we have overriden the default save method that comes with django itself
+        self.name = self.user.full_name
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return self.name
+
+
+class Account(models.Model):
+    uuid_field = models.UUIDField(
+        default=uuid.uuid4, editable=False, unique=True)
+    holder = models.OneToOneField(Client, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    account_number = models.CharField(
+        unique=True, max_length=12, null=True, blank=True)
+    account_type = models.CharField(max_length=20, choices=[(
+        'Checking', 'Checking'), ('Savings', 'Savings')])
+    created_at = models.DateTimeField(default=timezone.now)
 
     def generate_account_number(self):
         # Logic to generate a unique account number
@@ -91,13 +101,22 @@ class Client(models.Model):
         return generate_account_number(200)
 
     def save(self, *args, **kwargs):
+        if not self.account_number:
+            self.account_number = self.generate_account_number()
         # we have overriden the default save method that comes with django itself
-        self.name = self.user.full_name
-        self.account_number = self.generate_account_number()
         super().save(*args, **kwargs)
 
-    def __str__(self):
-        return self.name
+
+class Transaction(models.Model):
+    account = models.ForeignKey(Account, on_delete=models.CASCADE)
+    transaction_date = models.DateTimeField(default=timezone.now)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    balance = models.DecimalField(max_digits=10, decimal_places=2)
+    transaction_type = models.CharField(max_length=50, choices=[(
+        'deposit', 'deposit'), ('withdraw', 'withdraw'), ('balance', 'balance')])
+    transaction_cost = models.DecimalField(max_digits=10, decimal_places=2)
+
+
 
 
 class Staff(models.Model):

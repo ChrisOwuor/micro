@@ -21,3 +21,15 @@ def generate_account_number(birthdate):
     return final_account_number
 
 
+def calculate_transaction_cost(amount):
+    if not amount:
+        return "No amount entered"
+
+    cost_ranges = [(0, 1000, 100), (1001, 2000, 200),
+                   (2001, 3000, 300), (3001, 5000, 400)]
+    if amount > 5000:
+        return "you have exceeede the limit"
+
+    for start, end, cost in cost_ranges:
+        if start <= amount <= end:
+            return cost
