@@ -76,9 +76,10 @@ class Client(models.Model):
     # New method to generate account number
 
     def save(self, *args, **kwargs):
-        # we have overriden the default save method that comes with django itself
-        self.name = self.user.full_name
-        super().save(*args, **kwargs)
+        if not self.name:
+            # we have overriden the default save method that comes with django itself
+            self.name = self.user.full_name
+            super().save(*args, **kwargs)
 
     def __str__(self):
         return self.name
@@ -115,8 +116,6 @@ class Transaction(models.Model):
     transaction_type = models.CharField(max_length=50, choices=[(
         'deposit', 'deposit'), ('withdraw', 'withdraw'), ('balance', 'balance')])
     transaction_cost = models.DecimalField(max_digits=10, decimal_places=2)
-
-
 
 
 class Staff(models.Model):

@@ -78,7 +78,6 @@ class ClientSerializer(serializers.ModelSerializer):
         validated_data['user'] = user
         # Set is_client to True by default during creation
         validated_data['is_client'] = True
-
         # Create a new Client instance linked to the user
         instance = self.Meta.model(**validated_data)
         instance.save()
