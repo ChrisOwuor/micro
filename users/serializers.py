@@ -67,6 +67,9 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
 
 class ClientSerializer(serializers.ModelSerializer):
+    phone = serializers.IntegerField(required=True)
+    name = serializers.CharField(required=False)
+
 
     class Meta:
         model = Client

@@ -73,7 +73,6 @@ class Client(models.Model):
     age = models.PositiveIntegerField()
     sex = models.CharField(max_length=10)
     phone = models.IntegerField(default=0)
-    # New method to generate account number
 
     def save(self, *args, **kwargs):
         if not self.name:
@@ -102,8 +101,7 @@ class Account(models.Model):
         return generate_account_number(200)
 
     def save(self, *args, **kwargs):
-        if not self.account_number:
-            self.account_number = self.generate_account_number()
+        self.account_number = self.generate_account_number()
         # we have overriden the default save method that comes with django itself
         super().save(*args, **kwargs)
 
