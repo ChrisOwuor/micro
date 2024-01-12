@@ -161,7 +161,7 @@ class Client_transactions(APIView):
     def post(self, request):
         client = Client.objects.get(user=request.user)
         if not client:
-            return Response({"message": "you are not allowed since you not a client"})
+            return Response({"msg": "non client cannot perfom transactions"})
         account = Account.objects.get(holder=99)
         if not account:
             return {"msg": "no account found"}
