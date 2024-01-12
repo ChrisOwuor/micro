@@ -7,7 +7,7 @@ class LoanSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Loan
-        fields = ['loan_id', 'client', 'amount', 'status',
+        fields = ['id','loan_id', 'client', 'amount', 'status',
                   'disbursement_date', 'repayment_date', 'loan_type']
 
 
@@ -31,4 +31,4 @@ class APIKeySerializer(serializers.ModelSerializer):
 
     class Meta:
         model = APIKey
-        fields = ['api_key_id', 'api_user', 'key', 'valid_until']
+        fields = ['id','api_key_id', 'api_user', 'key', 'valid_until']

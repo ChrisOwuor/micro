@@ -1,7 +1,17 @@
 from django.contrib import admin
 from .models import Loan, LoanDisbursement, Repayment, APIKey
 
+from users.models import Transaction
 
+
+class TransactionAdmin(admin.ModelAdmin):
+    list_display = ('account', 'transaction_date', 'amount',
+                    'balance', 'transaction_type', 'transaction_cost')
+    list_filter = ('transaction_type',)
+    search_fields = ('account__account_number', 'transaction_date')
+
+
+admin.site.register(Transaction, TransactionAdmin)
 @admin.register(Loan)
 class LoanAdmin(admin.ModelAdmin):
     list_display = ( 'client', 'amount', 'status',

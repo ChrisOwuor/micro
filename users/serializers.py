@@ -1,3 +1,4 @@
+from .models import Transaction
 from .models import Client, Staff, APIUser, Account
 from rest_framework import serializers
 from users.models import User
@@ -63,7 +64,15 @@ class CustomUserSerializer(serializers.ModelSerializer):
         instance.save()
         return instance
 
+
 # serializers.py
+
+
+class TransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields = ('id','account', 'transaction_date', 'amount',
+                  'balance', 'transaction_type', 'transaction_cost')
 
 
 class ClientSerializer(serializers.ModelSerializer):

@@ -18,9 +18,9 @@ import logging
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
-from users.serializers import ClientSerializer, APIUserSerializer, StaffSerializer
+from users.serializers import ClientSerializer, APIUserSerializer, StaffSerializer, TransactionSerializer
 from .serializers import LoanSerializer, LoanDisbursementSerializer, RepaymentSerializer, APIKeySerializer
-from users.models import Client
+from users.models import Client, Account
 from .models import Loan, LoanDisbursement, Repayment, APIKey
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view,  permission_classes
@@ -143,7 +143,7 @@ class Disbursements(APIView):
     permission_classes = [IsAuthenticated]
     # make loan disbursement
 
-    def post(self, request,id):
+    def post(self, request, id):
         disbursement_serializer = LoanDisbursementSerializer(data=request.data)
         if disbursement_serializer.is_valid():
             disbursement_serializer.save()
@@ -153,3 +153,20 @@ class Disbursements(APIView):
 
     def get(self, request):
         ...
+
+
+class Client_transactions(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        client = Client.objects.get(user=request.user)
+        if not client:
+            return Response({"message": "you are not allowed since you not a client"})
+        account = Account.objects.get(holder=99)
+        if not account:
+            return {"msg": "no account found"}
+        transaction_serializer = TransactionSerializer(data=request.data)
+        if transaction_serializer.is_valid():
+            trans = transaction_serializer.data
+            return Response(trans, status=status.HTTP_201_CREATED)
+        return Response(transaction_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

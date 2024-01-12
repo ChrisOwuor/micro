@@ -105,6 +105,9 @@ class Account(models.Model):
         # we have overriden the default save method that comes with django itself
         super().save(*args, **kwargs)
 
+    def __str__(self):
+        return self.account_number
+
 
 class Transaction(models.Model):
     account = models.ForeignKey(Account, on_delete=models.CASCADE)
