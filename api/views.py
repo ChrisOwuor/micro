@@ -190,7 +190,7 @@ class Client_transactions(APIView):
                     return Response({"insufficient funds "}, status=status.HTTP_201_CREATED)
                 transaction["transaction_cost"] = transaction_cost
                 transaction["balance"] = balance
-                print(transaction)
+               
                 return Response(transaction, status=status.HTTP_201_CREATED)
             elif transacion_type == "deposit":
                 amount = float(transaction.get("amount", 0.00))
@@ -201,7 +201,7 @@ class Client_transactions(APIView):
                                 (amount+transaction_cost))
                 transaction["transaction_cost"] = transaction_cost
                 transaction["balance"] = balance
-                print(transaction)
+               
                 return Response(transaction, status=status.HTTP_201_CREATED)
 
         return Response(transaction_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
