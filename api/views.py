@@ -26,6 +26,8 @@ from rest_framework.views import APIView
 from rest_framework.decorators import api_view,  permission_classes
 from rest_framework.permissions import IsAuthenticated
 
+from users.utils import calculate_transaction_cost
+
 
 class Client_detail(APIView):
     permission_classes = [IsAuthenticated]
@@ -157,16 +159,49 @@ class Disbursements(APIView):
 
 class Client_transactions(APIView):
     permission_classes = [IsAuthenticated]
+    # withdrawal request
 
     def post(self, request):
         client = Client.objects.get(user=request.user)
         if not client:
             return Response({"msg": "non client cannot perfom transactions"})
-        account = Account.objects.get(holder=99)
+        account = Account.objects.get(holder=client)
         if not account:
             return {"msg": "no account found"}
-        transaction_serializer = TransactionSerializer(data=request.data)
+
+        data = {
+            "account": account.id,
+            "amount": float(request.data.get("amount", 0.00)),
+            "transaction_type": request.data.get("transaction_type",)
+        }
+        account_balance = account.amount
+        transaction_serializer = TransactionSerializer(data=data)
         if transaction_serializer.is_valid():
-            trans = transaction_serializer.data
-            return Response(trans, status=status.HTTP_201_CREATED)
+            transaction = transaction_serializer.data
+            transacion_type = transaction.get("transaction_type")
+            if transacion_type == "withdraw":
+                amount = float(transaction.get("amount", 0.00))
+                transaction_cost = float(
+                    calculate_transaction_cost(amount, transacion_type))
+                total_deduction = amount+transaction_cost
+                balance = float(float(account.amount) -
+                                (amount+transaction_cost))
+                if account_balance < total_deduction:
+                    return Response({"insufficient funds "}, status=status.HTTP_201_CREATED)
+                transaction["transaction_cost"] = transaction_cost
+                transaction["balance"] = balance
+                print(transaction)
+                return Response(transaction, status=status.HTTP_201_CREATED)
+            elif transacion_type == "deposit":
+                amount = float(transaction.get("amount", 0.00))
+
+                transaction_cost = float(
+                    calculate_transaction_cost(amount, transacion_type))
+                balance = float(float(account.amount) +
+                                (amount+transaction_cost))
+                transaction["transaction_cost"] = transaction_cost
+                transaction["balance"] = balance
+                print(transaction)
+                return Response(transaction, status=status.HTTP_201_CREATED)
+
         return Response(transaction_serializer.errors, status=status.HTTP_400_BAD_REQUEST)

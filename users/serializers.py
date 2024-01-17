@@ -69,16 +69,25 @@ class CustomUserSerializer(serializers.ModelSerializer):
 
 
 class TransactionSerializer(serializers.ModelSerializer):
+    balance = serializers.DecimalField(
+        required=False, max_digits=10, decimal_places=2)
+    transaction_cost = serializers.DecimalField(
+        required=False, max_digits=10, decimal_places=2)
+
     class Meta:
         model = Transaction
-        fields = ('id','account', 'transaction_date', 'amount',
+        fields = ('id', 'account', 'transaction_date', 'amount',
                   'balance', 'transaction_type', 'transaction_cost')
+
+    def create(self, validated_data):
+        transaction_instance = self.Meta.model.objects.create(**validated_data)
+        transaction_instance.save()
+        return transaction_instance
 
 
 class ClientSerializer(serializers.ModelSerializer):
     phone = serializers.IntegerField(required=True)
     name = serializers.CharField(required=False)
-
 
     class Meta:
         model = Client
