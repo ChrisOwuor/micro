@@ -118,6 +118,11 @@ class Transaction(models.Model):
         'deposit', 'deposit'), ('withdraw', 'withdraw'), ('balance', 'balance')])
     transaction_cost = models.DecimalField(max_digits=10, decimal_places=2)
 
+    def save(self, *args, **kwargs):
+        if not self.transaction_cost:
+            self.transaction_cost = 100
+            super().save(*args, **kwargs)
+
 
 class Staff(models.Model):
     uuid_field = models.UUIDField(
