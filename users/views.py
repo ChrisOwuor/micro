@@ -70,12 +70,8 @@ class CustomUserCreate(APIView):
                 return Response({'email': ['This email address is already in use.']}, status=status.HTTP_400_BAD_REQUEST)
             # so if the above is valid we call the create or update  method in the serilizer class by default
             # so what create function does it creates an instace of the user model then uses the save method to store data into the db
-            user = serializer.save()
-            if user:
-                json = serializer.data
-            print(serializer.validated_data)
-
-            return Response(json, status=status.HTTP_201_CREATED)
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def is_email_unique(self, email):

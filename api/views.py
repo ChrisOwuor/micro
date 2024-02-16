@@ -14,7 +14,6 @@
 # apply loan
 # withdraw loan
 # repay loan
-import logging
 from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
 from rest_framework import status
@@ -147,9 +146,9 @@ class Disbursements(APIView):
 
     def post(self, request, id):
         loan_to_disbusrse = Loan.objects.get(id=id)
-        user = User.objects.get(id=2)
-        disbursed_by = Staff.objects.get(user=user)
+        disbursed_by = Staff.objects.get(user=request.user)
         print(loan_to_disbusrse)
+        print(disbursed_by)
         # disbursement_serializer = LoanDisbursementSerializer(data=request.data)
         # if disbursement_serializer.is_valid():
         #     disbursement_serializer.save()
