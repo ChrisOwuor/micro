@@ -35,7 +35,8 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
 class MyTokenObtainPairView(TokenObtainPairView):
     serializer_class = MyTokenObtainPairSerializer
 
-
+# Accont creation for all the users of the sytem the staff and the client 
+# accounts will be created in this view
 class CustomUserCreate(APIView):
     permission_classes = [AllowAny]
 
@@ -127,6 +128,11 @@ class ClientUpdateView(APIView):
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+
+# After creating the account users will now
+# create the client account here by providing the personal details
+# after saving the client data we will use the saved client to create an
+# account  fo the client
 class ClientCreateView(APIView):
     permission_classes = [IsAuthenticated]
 
